@@ -1,0 +1,211 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Titulo = "<h6>Eventos</h6>";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Tabla de Evento</h3>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">                       
+                       
+                            <button id="btnMostrarFormulario" type="submit" class="btn btn-default">
+                                <a>Nuevo</a>
+                            </button>
+                      
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table id="tablaEventos"  class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Lugar</th>
+                            <th>Departamento</th>
+                            <th>Tipo</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Fecha de Fin</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Aquí se agregarán los eventos dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+<!-- Formulario para agregar evento -->
+<div id="formularioEvento" class="form-container" style="display:none">
+    <h4>Agregar Evento</h4>
+
+    <form id="formEvento">
+        <div class="card-body">
+            <div class="form-group">
+                <label for="nombreEvento">Nombre de evetno</label>
+                <input type="text" class="form-control" id="nombreEvento" placeholder="Ingresa Nombre del Evento">
+            </div>
+            <div class="form-group">
+                <label for="lugarEvento">Lugar</label>
+                <input type="text" class="form-control" id="lugarEvento" placeholder="Ingrese el Lugar">
+            </div>
+
+            <div class="form-group">
+                <label for="departamentoEvento">Departamento:</label>
+                <select class="form-control" id="departamentoEvento" required>
+                    <option value="Lima">Lima</option>
+                    <option value="Piura">Piura</option>
+                    <option value="Cusco">Cusco</option>
+                    <option value="Puno">Puno</option>
+                    <option value="Arequipa">Arequipa</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tipoEvento">Tipo de Evento:</label>
+                <select class="form-control" id="tipoEvento">
+                    <!-- Opciones de tipo de evento cargadas dinámicamente -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fechaInicio">Fecha de Inicio:</label>
+                <input type="datetime-local" class="form-control" id="fechaInicio" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaFin">Fecha de Fin:</label>
+                <input type="datetime-local" class="form-control" id="fechaFin" required>
+            </div>
+           
+            
+        </div>
+        <!-- /.card-body -->
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Aceptar</button>
+            <button type="button" id="btnCancelarEvento" class="btn btn-secondary">Cancelar</button>
+        </div>
+    </form>
+
+
+
+
+
+
+   
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Cargar los eventos almacenados en el localStorage al cargar la página
+        cargarEventosDesdeLocalStorage();
+
+        // Cargar los tipos de eventos almacenados en el localStorage al cargar la página
+        cargarTiposEventosDesdeLocalStorage();
+
+        $("#btnMostrarFormulario").click(function () {
+            $("#formularioEvento").toggle(); // Alternar la visualización del formulario
+        });
+
+        // Función para cargar los tipos de eventos desde el localStorage y agregarlos al formulario
+        function cargarTiposEventosDesdeLocalStorage() {
+            var tiposEventos = JSON.parse(localStorage.getItem('tiposEventos')) || [];
+            var selectTipoEvento = $("#tipoEvento");
+
+            selectTipoEvento.empty(); // Limpiar opciones existentes
+            tiposEventos.forEach(function (tipoEvento) {
+                if (tipoEvento.estado === 'activo') {
+                    selectTipoEvento.append('<option value="' + tipoEvento.tipo + '">' + tipoEvento.tipo + '</option>');
+                }
+            });
+        }
+
+
+        // Función para cancelar la creación de evento
+        $("#btnCancelarEvento").click(function () {
+            $("#formEvento")[0].reset();
+            $("#formularioEvento").hide();
+        });
+       
+      // Función para cargar los eventos desde el localStorage y agregarlos a la tabla
+        function cargarEventosDesdeLocalStorage() {
+            var eventos = JSON.parse(localStorage.getItem('eventos')) || [];
+            eventos.forEach(function (evento) {
+                agregarEventoATabla(evento);
+            });
+        }
+
+        // Función para agregar un evento a la tabla
+        function agregarEventoATabla(evento) {
+            // Verificar si ya existe una fila con el mismo ID
+            var filaExistente = $("#tablaEventos tbody").find("tr#evento" + evento.id);
+
+            // Si la fila no existe, agregarla a la tabla
+            if (filaExistente.length === 0) {
+                $("#tablaEventos tbody").append("<tr id='evento" + evento.id + "'><td>" + evento.id + "</td><td>" + evento.nombre + "</td><td>" + evento.lugar + "</td><td>" + evento.departamento + "</td><td>" + evento.tipo + "</td><td>" + evento.fechaInicio + "</td><td>" + evento.fechaFin + "</td><td><a href='../Participante/Index'><button id='btnAgregarTipoEvento'><img width='28' height='28' src='/dist/img/icons8-calendario-50.png' alt='Signo Más'/>Asistencia</button></td></tr>");
+            }
+            
+        }
+
+        // Función para manejar el envío del formulario de evento
+        $("#formEvento").submit(function (event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+
+            // Obtener los valores del formulario de evento
+            var nombre = $("#nombreEvento").val();
+            var lugar = $("#lugarEvento").val();
+            var departamento = $("#departamentoEvento").val()
+            var tipo = $("#tipoEvento").val();
+            var fechaInicio = $("#fechaInicio").val();
+            var fechaFin = $("#fechaFin").val();
+
+            // Obtener el ID más alto actualmente en la tabla de eventos
+            var maxID = 0;
+            $("#tablaEventos tbody tr").each(function () {
+                var id = parseInt($(this).attr('id').replace('evento', ''));
+                if (id > maxID) {
+                    maxID = id;
+                }
+            });
+
+            // Calcular el nuevo ID para el evento
+            var nuevoID = maxID + 1;
+
+            var evento = {
+                id: nuevoID,
+                nombre: nombre,
+                lugar: lugar,
+                departamento: departamento,
+                tipo: tipo,
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin
+            };
+
+            // Agregar el evento a la tabla
+            agregarEventoATabla(evento);
+
+            // Guardar el nuevo evento en el localStorage
+            var eventos = JSON.parse(localStorage.getItem('eventos')) || [];
+            eventos.push(evento);
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+
+            // Limpiar el formulario de evento y ocultarlo
+            $("#formEvento")[0].reset();
+            $("#formularioEvento").hide();
+           
+        });
+
+    });
+</script>

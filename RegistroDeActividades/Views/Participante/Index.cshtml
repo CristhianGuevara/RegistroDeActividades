@@ -1,0 +1,224 @@
+﻿User
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Titulo = "<h6>Participantes</h6>";
+}
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Detalle de Evento </h3>
+
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <button class='btn btn-primary btn-registrar-participante'>Registrar Participante</button>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body table-responsive p-0">
+                    <table id="tablaDetallesEventos" class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Fecha</th>
+                                <th>Nombre del Evento</th>
+                                <th>Lugar</th>
+                                <th>Participantes en Juntos</th>
+                                <th>Participantes fuera de Juntos</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyDetallesEvento">
+                            <!-- Aquí se agregarán los detalles del evento -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="formularioParticipante" style="display:none" class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Agregar Participante</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form id="formParticipante">
+                    <div class="form-group">
+                        <label for="nombreParticipante">Nombre del Participante:</label>
+                        <input type="text" class="form-control" id="nombreParticipante" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="documentoParticipante">Documento de Identidad:</label>
+                        <input type="text" class="form-control" id="documentoParticipante" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreMadre">Nombre de la Madre:</label>
+                        <input type="text" class="form-control" id="nombreMadre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="documentoMadre">Documento de Identidad de la madre:</label>
+                        <input type="text" class="form-control" id="documentoMadre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pertenece">Pertenece a Juntos:</label>
+                        <input type="checkbox" class="form-control" id="pertenece" value="true">
+                    </div>
+
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.card -->
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Lista de Asistentes</h3>
+
+
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body table-responsive p-0">
+                    <table id="tablaParticipantes" class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Documento de Identidad</th>
+                                <th>Nombre de la Madre</th>
+                                <th>Documento de Identidad de la Madre</th>
+                                <th>Pertenece a Juntos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyParticipantes">
+                            <!-- Aquí se agregarán los participantes -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+
+
+
+
+</section>
+
+
+<!-- Bootstrap JS y jQuery (requerido para Bootstrap) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Al cargar la página, mostrar los detalles de los eventos
+        mostrarDetallesEventos();
+
+        // Al hacer clic en el botón "Registrar Participante", mostrar el formulario de participante y la tabla de lista de participantes
+        $(document).on('click', '.btn-registrar-participante', function () {
+            var evento = $(this).closest('tr').data('evento');
+            $('#formularioParticipante').show().data('evento', evento);
+            $('#tablaParticipantes').show();
+            $('html, body').animate({
+                scrollTop: $('#formularioParticipante').offset().top
+            }, 1000);
+        });
+
+        // Manejar el envío del formulario de participante
+        $('#formParticipante').submit(function (event) {
+            event.preventDefault();
+            var participante = {
+                nombre: $('#nombreParticipante').val(),
+                documento: $('#documentoParticipante').val(),
+                nombreMadre: $('#nombreMadre').val(),
+                documentoMadre: $('#documentoMadre').val(),
+                pertenece: $('#pertenece').is(':checked')
+            };
+            agregarParticipante(participante);
+            limpiarFormularioParticipante();
+        });
+
+        function mostrarDetallesEventos() {
+            // Obtener los datos de todos los eventos desde el almacenamiento local
+            var eventos = JSON.parse(localStorage.getItem('eventos'));
+
+            // Verificar si se han almacenado datos de eventos
+            if (eventos && eventos.length > 0) {
+                // Limpiar el contenido de la tabla antes de agregar los detalles de los eventos
+                $("#tablaDetallesEventos tbody").empty();
+
+                // Iterar sobre cada evento y agregar sus detalles a la tabla
+                eventos.forEach(function (evento) {
+                    var fila = "<tr data-evento='" + JSON.stringify(evento) + "'>" +
+                        "<td>" + evento.id + "</td>" +
+                        "<td>" + evento.fechaInicio + "</td>" +
+                        "<td>" + evento.nombre + "</td>" +
+                        "<td>" + evento.lugar + "</td>" +
+                        "<td>" + (evento.participantesJuntos || 0) + "</td>" +
+                        "<td>" + (evento.participantesFueraJuntos || 0) + "</td>" +
+                        "<td><button class='btn btn-primary btn-registrar-participante'>Registrar Participante</button></td>" +
+                        "</tr>";
+                    $("#tablaDetallesEventos tbody").append(fila);
+                });
+            } else {
+                // Mostrar un mensaje de error si no se encuentran eventos almacenados
+                $("#tablaDetallesEventos tbody").html("<tr><td colspan='6'>No se encontraron detalles de eventos.</td></tr>");
+            }
+        }
+
+        function agregarParticipante(participante) {
+            var evento = $('#formularioParticipante').data('evento');
+            var eventos = JSON.parse(localStorage.getItem('eventos')) || [];
+            eventos.forEach(function (e, index) {
+                if (e.nombre === evento.nombre && e.fechaInicio === evento.fechaInicio && e.fechaFin === evento.fechaFin) {
+                    if (participante.pertenece) {
+                        e.participantesJuntos = (e.participantesJuntos || 0) + 1;
+                    } else {
+                        e.participantesFueraJuntos = (e.participantesFueraJuntos || 0) + 1;
+                    }
+                    // Agregar el participante a la lista de participantes
+                    var fila = '<tr>';
+                    fila += '<td>' + participante.nombre + '</td>';
+                    fila += '<td>' + participante.documento + '</td>';
+                    fila += '<td>' + participante.nombreMadre + '</td>';
+                    fila += '<td>' + participante.documentoMadre + '</td>';
+                    fila += '<td>' + (participante.pertenece ? 'Sí' : 'No') + '</td>';
+                    fila += '</tr>';
+                    $('#tbodyParticipantes').append(fila);
+
+                    // Aplicar estilo de fondo a la fila
+                    var ultimaFila = $('#tbodyParticipantes tr:last');
+                    if (participante.pertenece) {
+                        ultimaFila.addClass('table-success');
+                    }
+
+                    eventos[index] = e;
+                    return false;
+                }
+            });
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+            mostrarDetallesEventos();
+        }
+
+        function limpiarFormularioParticipante() {
+            $('#formParticipante')[0].reset();
+            $('#formularioParticipante').hide();
+        }
+    });
+</script> 
