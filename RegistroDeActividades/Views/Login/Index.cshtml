@@ -19,14 +19,28 @@
     <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <link href="~/css/estilo.css" rel="stylesheet" />
+
+    <style>
+       
+    </style>
+
+
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="../../index2.html"><b>SISTEMA DE EVENTOS</b></br>PROGRAMA JUNTOS</a>
+           
         </div>
         <!-- /.login-logo -->
         <div class="card">
+            <div class="card">
+                <div class="card-header bg-blue">
+                    <div class="card-title col-12">
+                        <b>SISTEMA DE EVENTOS</b></br>Programa Juntos</a>
+                    </div>
+
+                </div>
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Iniciar Sesión</p>
 
@@ -51,7 +65,7 @@
                         <div class="col-4"></div>
                         <div class="col-4 captcha">
                             <!-- Centra los elementos dentro de la columna -->
-                            <p id="captchaImage" style="background-color: #203e7a; color: #fff;text-align:center"></p>
+                            <p id="captchaImage" style="background-color: #203e7a; color: #fff;text-align:center ;height: 45px;font-size: xx-large;"></p>
                             
                         </div>
                          <div class="col-4"></div>
@@ -59,15 +73,26 @@
                     <div class="row">
                         <div class="col-4"></div>
                         <div class="col-4">                          
-                            <button type="button" id="refreshCaptcha" class="btn btn-secondary">Refrescar</button>
+                            <button type="button" id="refreshCaptcha" class="btn btn-block btn-outline-warning">Refrescar</button>
                         </div>
                         <div class="col-4"></div>
                     </div>
+                    <div class="row"></br></div>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Ingrese el Captcha">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-4"></div>
+
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block" style="background-color:red">Ingresar</button>
+                            <button type="submit" class="btn btn-block bg-gradient-danger">Ingresar</button>
                         </div>
                         <div class="col-4"></div>
                         <!-- /.col -->
@@ -82,6 +107,11 @@
             <!-- /.login-card-body -->
         </div>
     </div>
+
+
+   
+
+
     <!-- /.login-box -->
     <!-- jQuery -->
     <script src="../../plugins/jquery/jquery.min.js"></script>

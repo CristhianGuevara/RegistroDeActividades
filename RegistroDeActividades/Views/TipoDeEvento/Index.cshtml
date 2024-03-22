@@ -1,37 +1,36 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    ViewBag.Titulo = "<h6>Tipos de Eventos</h6>";
+﻿@{
+    
 }
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Tipos de Evento</h3>
+   <div class="col-12">
+        <div class="card">            
+           <div class="card-header bg-blue">
+               <div class="card-title">
+                    Tipos de Eventos
+               </div>
+                </div>
+            
 
-                <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 150px;">
-                       
-                            <button id="btnAgregarTipoEvento" type="submit" class="btn btn-default">
-                                <a>Nuevo Tipo de Evento</a>
-                            </button>
-                      
-                    </div>
+            <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 100px; margin: 0 auto;">
+                    <button id="btnAgregarTipoEvento" type="submit" class="btn btn-block bg-gradient-primary">
+                        <i class="fas fa-plus-circle"></i> Nuevo
+                    </button>
                 </div>
             </div>
+
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
                 <table id="tablaTiposEventos" class="table table-hover text-nowrap">
                     <thead>
-                        <tr>                            
+                        <tr>
                             <th>Nombre</th>
                             <th>Estado</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyTiposEventos">
-                        
+
                         <!-- Aquí se agregarán los eventos dinámicamente -->
                     </tbody>
                 </table>
@@ -50,55 +49,85 @@
             <div class="form-group">
                 <label for="nuevoTipoEvento">Nombre de tipo de Evento</label>
                 <input type="text" class="form-control" id="nuevoTipoEvento" placeholder="Ingresa Nombre del Tipo de Evento">
-            </div>           
-            
+            </div>
+
             <div class="form-group">
                 <label>Estado:</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="estadoNuevo" id="activoEditar" value="activo">
-                    <label class="form-check-label" for="activoEditar">Activo</label>
+                    <input class="form-check-input" type="radio" name="estadoNuevo" id="activoNuevo" value="activo" checked>
+                    <label class="form-check-label" for="activoNuevo">Activo</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="estadoNuevo" id="inactivoEditar" value="inactivo">
-                    <label class="form-check-label" for="inactivoEditar">Inactivo</label>
+                    <input class="form-check-input" type="radio" name="estadoNuevo" id="inactivoNuevo" value="inactivo">
+                    <label class="form-check-label" for="inactivoNuevo">Inactivo</label>
                 </div>
             </div>
-
-
         </div>
         <!-- /.card-body -->
 
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Aceptar</button>
-            <button type="button" id="btnCancelarEvento" class="btn btn-secondary">Cancelar</button>
+            <button type="button" id="btnCancelarNuevo" class="btn btn-secondary">Cancelar</button>
         </div>
     </form>
-
-
-
-
-
-
-
 </div>
+
+<!-- Formulario para editar evento -->
+<div id="formEditarTipoEvento" class="form-container" style="display:none">
+    <h4>Editar Evento</h4>
+
+    <form id="formEditarTipoEventoForm">
+        <div class="card-body">
+            <div class="form-group">
+                <label for="editarTipoEvento">Nombre de tipo de Evento</label>
+                <input type="text" class="form-control" id="editarTipoEvento" placeholder="Ingresa Nombre del Tipo de Evento">
+            </div>
+
+            <div class="form-group">
+                <label>Estado:</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="estadoEditar" id="activoEditar" value="activo">
+                    <label class="form-check-label" for="activoEditar">Activo</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="estadoEditar" id="inactivoEditar" value="inactivo">
+                    <label class="form-check-label" for="inactivoEditar">Inactivo</label>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Aceptar</button>
+            <button type="button" id="btnCancelarEditar" class="btn btn-secondary">Cancelar</button>
+        </div>
+    </form>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Mostrar el formulario flotante al hacer clic en el botón "Agregar Tipo de Evento"
+        // Mostrar el formulario de nuevo tipo de evento al hacer clic en el botón "Nuevo"
         $("#btnAgregarTipoEvento").click(function () {
             $("#formNuevoTipoEvento").show();
+            $("#formEditarTipoEvento").hide();
         });
 
         // Manejar el envío del formulario de nuevo tipo de evento
-        $("#formNuevoTipoEvento").submit(function (event) {
+        $("#formNuevoTipoEventoForm").submit(function (event) {
             event.preventDefault();
+            guardarNuevoTipoEvento();
+        });
+
+        // Función para guardar un nuevo tipo de evento en el almacenamiento local
+        function guardarNuevoTipoEvento() {
             var nuevoTipoEvento = $("#nuevoTipoEvento").val();
-            var estado = $("input[name='estadoNuevo']:checked").val();
+            var estadoNuevo = $("input[name='estadoNuevo']:checked").val();
             if (nuevoTipoEvento.trim() !== '') {
                 var tiposEventos = JSON.parse(localStorage.getItem('tiposEventos')) || [];
-                tiposEventos.push({ tipo: nuevoTipoEvento, estado: estado });
+                tiposEventos.push({ tipo: nuevoTipoEvento, estado: estadoNuevo });
                 localStorage.setItem('tiposEventos', JSON.stringify(tiposEventos));
                 $("#nuevoTipoEvento").val('');
                 $("input[name='estadoNuevo'][value='activo']").prop("checked", true);
@@ -107,7 +136,7 @@
             } else {
                 alert('Por favor ingresa un tipo de evento válido.');
             }
-        });
+        }
 
         // Función para mostrar el formulario de edición y cargar los datos del tipo de evento seleccionado
         function mostrarFormularioEditar(index) {
@@ -117,21 +146,28 @@
             $("input[name='estadoEditar'][value='" + tipoEvento.estado + "']").prop("checked", true);
             $("#editandoIndice").val(index);
             $("#formEditarTipoEvento").show();
+            $("#formNuevoTipoEvento").hide();
         }
 
         // Manejar el envío del formulario de edición de tipo de evento
         $("#formEditarTipoEventoForm").submit(function (event) {
             event.preventDefault();
+            guardarTipoEventoEditado();
+           
+        });
+
+        // Función para guardar el tipo de evento editado en el almacenamiento local
+        function guardarTipoEventoEditado() {
             var index = $("#editandoIndice").val();
             var nuevoNombre = $("#editarTipoEvento").val();
-            var estado = $("input[name='estadoEditar']:checked").val();
+            var estadoEditar = $("input[name='estadoEditar']:checked").val();
             var tiposEventos = JSON.parse(localStorage.getItem('tiposEventos')) || [];
             tiposEventos[index].tipo = nuevoNombre;
-            tiposEventos[index].estado = estado;
+            tiposEventos[index].estado = estadoEditar;
             localStorage.setItem('tiposEventos', JSON.stringify(tiposEventos));
             $("#formEditarTipoEvento").hide();
             actualizarTablaTiposEventos();
-        });
+        }
 
         // Función para actualizar la tabla de tipos de eventos
         function actualizarTablaTiposEventos() {
@@ -141,21 +177,10 @@
             tiposEventos.forEach(function (tipoEvento, index) {
                 var estado = tipoEvento.estado === 'activo' ? 'Activo' : 'Inactivo';
                 var claseEstado = tipoEvento.estado === 'activo' ? 'activo' : 'inactivo';
-                var fila = "<tr><td>" + tipoEvento.tipo + "</td><td class='" + claseEstado + "'>" + estado + "</td><td><button class='agregar btnEditar' data-index='" + index + "'>Editar</button></td></tr>";
+                var fila = "<tr><td>" + tipoEvento.tipo + "</td><td class='" + claseEstado + "'>" + estado + "</td><td><button type='button' class='btn btn-outline-info btnEditar' data-index='" + index + "'><i class='fa-solid fa-pencil'></i>Editar</button></td></tr>";
                 tbody.append(fila);
             });
         }
-
-        function cargarTiposEventos() {
-            var tiposEventos = JSON.parse(localStorage.getItem('tiposEventos')) || [];
-            var selectTipoEvento = $("#tipoEvento");
-            selectTipoEvento.empty(); // Limpiar opciones existentes
-            tiposEventos.forEach(function (tipoEvento) {
-                selectTipoEvento.append('<option value="' + tipoEvento.tipo + '">' + tipoEvento.tipo + '</option>');
-            });
-        }
-
-        cargarTiposEventos();
 
         // Al cargar la página, actualizar la tabla de tipos de eventos
         actualizarTablaTiposEventos();
@@ -165,21 +190,16 @@
             var index = $(this).data("index");
             mostrarFormularioEditar(index);
         });
-    });
 
-    function guardarTiposEventosLocalStorage() {
-        var tiposEventos = JSON.parse(localStorage.getItem('tiposEventos')) || [];
-        var nuevoTipoEvento = $("#nuevoTipoEvento").val();
-        var estado = $("input[name='estadoNuevo']:checked").val();
+        // Manejar la acción de cancelar la edición de un tipo de evento
+        $("#btnCancelarEditar").click(function () {
+            $("#formEditarTipoEvento").hide();
+        });
 
-        if (nuevoTipoEvento.trim() !== '') {
-            tiposEventos.push({ tipo: nuevoTipoEvento, estado: estado });
-            localStorage.setItem('tiposEventos', JSON.stringify(tiposEventos));
-        }
-    }
-
-    // Llamar a la función para cargar tipos de eventos cuando la ventana se cargue
-    $(document).ready(function () {
-        cargarTiposEventosDesdeLocalStorage();
+        // Manejar la acción de cancelar la creación de un nuevo tipo de evento
+        $("#btnCancelarNuevo").click(function () {
+            $("#formNuevoTipoEvento").hide();
+        });
     });
 </script>
+

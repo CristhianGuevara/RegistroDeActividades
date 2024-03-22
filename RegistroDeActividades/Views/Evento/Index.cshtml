@@ -2,24 +2,26 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewBag.Titulo = "<h6>Eventos</h6>";
+   
 }
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Tabla de Evento</h3>
-
-                <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 150px;">                       
-                       
-                            <button id="btnMostrarFormulario" type="submit" class="btn btn-default">
-                                <a>Nuevo</a>
-                            </button>
-                      
-                    </div>
+           <div class="card-header bg-blue">
+               <div class="card-title col-12">
+                  Eventos
                 </div>
+               
             </div>
+            <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 100px; margin: 0 auto;">
+                    <button id="btnMostrarFormulario" type="submit" class="btn btn-block bg-gradient-primary">
+                        <i class="fas fa-plus-circle"></i> Nuevo
+                    </button>
+                </div>
+            </div>               
+      
+
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
                 <table id="tablaEventos"  class="table table-hover text-nowrap">
@@ -154,7 +156,7 @@
 
             // Si la fila no existe, agregarla a la tabla
             if (filaExistente.length === 0) {
-                $("#tablaEventos tbody").append("<tr id='evento" + evento.id + "'><td>" + evento.id + "</td><td>" + evento.nombre + "</td><td>" + evento.lugar + "</td><td>" + evento.departamento + "</td><td>" + evento.tipo + "</td><td>" + evento.fechaInicio + "</td><td>" + evento.fechaFin + "</td><td><a href='../Participante/Index'><button id='btnAgregarTipoEvento'><img width='28' height='28' src='/dist/img/icons8-calendario-50.png' alt='Signo Más'/>Asistencia</button></td></tr>");
+                $("#tablaEventos tbody").append("<tr id='evento" + evento.id + "'><td>" + evento.id + "</td><td>" + evento.nombre + "</td><td>" + evento.lugar + "</td><td>" + evento.departamento + "</td><td>" + evento.tipo + "</td><td>" + evento.fechaInicio + "</td><td>" + evento.fechaFin + "</td><td><a href='../Participante/Index'><button class='btn btn-outline-info' id='btnAgregarTipoEvento'><i class='fas fa - calendar'></i>Asistencia</button></td></tr>");
             }
             
         }
